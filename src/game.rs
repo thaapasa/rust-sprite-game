@@ -1,8 +1,10 @@
 use ggez::Context;
+use crate::actor::Actor;
 use crate::game_assets::GameAssets;
 
 pub struct SpriteGame {
-    pub assets: GameAssets
+    pub assets: GameAssets,
+    pub player: Actor,
 }
 
 impl SpriteGame {
@@ -10,8 +12,15 @@ impl SpriteGame {
         let assets = GameAssets::new(ctx)
             .expect("Could not initialize Game Assets");
 
+        let player = Actor::create_player();
+
         SpriteGame {
-            assets
+            assets,
+            player,
         }
+    }
+
+    pub fn actors(&self) -> Vec<&Actor> {
+        vec! [&self.player]
     }
 }

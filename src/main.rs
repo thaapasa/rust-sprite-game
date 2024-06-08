@@ -2,18 +2,19 @@ mod constants;
 mod primitives;
 mod game;
 mod game_assets;
+mod actor;
+mod event_handler;
 
 use crate::game::SpriteGame;
 
-use ggez::{conf, Context, ContextBuilder, GameResult};
-use ggez::graphics::{self, Color, DrawParam};
+use ggez::{conf, ContextBuilder};
 use ggez::event::{self, EventHandler};
 use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH};
 
 fn main() {
     // Make a Context.
     let (mut ctx, event_loop) = ContextBuilder::new("sprite_game", "Tuukka Haapasalo")
-        .window_setup(conf::WindowSetup::default().title("Sprite game"))
+        .window_setup(conf::WindowSetup::default().title("Sprite Knight"))
         .window_mode(conf::WindowMode::default().dimensions(SCREEN_WIDTH, SCREEN_HEIGHT))
         .add_resource_path("resources")
         .build()
@@ -27,18 +28,4 @@ fn main() {
 
     // Run!
     event::run(ctx, event_loop, my_game);
-}
-
-impl EventHandler for SpriteGame {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult {
-        // Update code here...
-        Ok(())
-    }
-
-    fn draw(&mut self, ctx: &mut Context) -> GameResult {
-        let mut canvas = graphics::Canvas::from_frame(ctx, Color::WHITE);
-        canvas.draw(&self.assets.background, DrawParam::new());
-        // Draw code here...
-        canvas.finish(ctx)
-    }
 }
