@@ -19,8 +19,4 @@ impl SpriteGame {
             player,
         }
     }
-
-    pub fn actors(&self) -> Vec<&Actor> {
-        vec! [&self.player]
-    }
 }
