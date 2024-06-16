@@ -1,4 +1,4 @@
-use crate::primitives::{Direction, Point2, Vector2};
+use crate::primitives::{Direction, Point2};
 
 #[derive(Debug)]
 pub enum ActorType {
@@ -9,18 +9,16 @@ pub enum ActorType {
 #[derive(Debug)]
 pub struct Actor {
     tag: ActorType,
-    pos: Point2,
-    facing: Direction,
-    velocity: Vector2,
+    pub pos: Point2,
+    pub facing: Direction,
 }
 
 impl Actor {
     pub fn create_player() -> Actor {
         Actor {
             tag: ActorType::Player,
-            pos: Point2::new(0.0,0.0),
+            pos: Point2::new(300.0, 200.0),
             facing: Direction::Left,
-            velocity: Vector2::new(0.0, 0.0),
         }
     }
 }

@@ -9,3 +9,5 @@ pub const SPRITE_WIDTH: f32 = 128.0;
 pub const SPRITE_HEIGHT: f32 = 128.0;
 
 pub const DRAW_BBOX: bool = false;
+
+pub const DESIRED_FPS: u32 = 60;
