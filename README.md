@@ -41,6 +41,20 @@ Run the game using:
 cargo run
 ```
 
+## Development
+
+In-game coordinates are as follows:
+
+- `+y` is up
+- `+x` is right
+- `0,0` is lower left corner of game screen
+- Actor position is the bottom left corner of the actor's bounding box
+- Hence, full actor bbox position is:
+  `(actor x, actor y) to (actor x + actor width, actor y + actor height)`
+- Note: Character sprites are far larger than the character bounding box.
+  The sprite tiles are 128x128 pixels, but the bounding box is only
+  42x74 pixels (centered on the x-axis, aligned to bottom on the y-axis).
+
 ## License
 
 [MIT](./LICENSE)

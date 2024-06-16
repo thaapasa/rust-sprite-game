@@ -8,3 +8,4 @@ pub enum Direction {
 
 pub type Point2 = Vec2;
 pub type Vector2 = Vec2;
+pub type Dimensions = Vec2;
