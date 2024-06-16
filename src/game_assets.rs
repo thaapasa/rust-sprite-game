@@ -18,7 +18,7 @@ impl GameAssets {
         })
     }
 
-    pub fn actor_image(&self, actor: &Actor) -> &Image {
+    pub fn actor_image(&self, _actor: &Actor) -> &Image {
         &self.player_idle_tiles
     }
 
