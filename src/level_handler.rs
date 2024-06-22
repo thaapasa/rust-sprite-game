@@ -7,27 +7,31 @@ use std::path::Path;
 use ggez::GameResult;
 
 pub struct LevelHandler {
-    width: u8,
-    height: u8,
+    width: usize,
+    height: usize,
     level: Vec<Vec<TileType>>,
 }
 
 impl LevelHandler {
-    pub fn new(file: &str, width: u8, height: u8) -> GameResult<LevelHandler> {
+    pub fn new(file: &str, width: usize, height: usize) -> GameResult<LevelHandler> {
         let tiles = LevelTiles::new();
-        let level = Self::load_level(file, &tiles, width, height)?;
+        let level = LevelBuilder::load_level(file, &tiles, width, height)?;
         return Ok(LevelHandler {
             width,
             height,
             level,
         });
     }
+}
 
+struct LevelBuilder {}
+
+impl LevelBuilder {
     fn load_level(
         file: &str,
         tiles: &LevelTiles,
-        width: u8,
-        height: u8,
+        width: usize,
+        height: usize,
     ) -> GameResult<Vec<Vec<TileType>>> {
         let path = Path::new(file);
         let file = File::open(&path)?;
@@ -43,7 +47,7 @@ impl LevelHandler {
         return Ok(level);
     }
 
-    fn read_row(tiles: &LevelTiles, line: &str, width: u8) -> Vec<TileType> {
+    fn read_row(tiles: &LevelTiles, line: &str, width: usize) -> Vec<TileType> {
         let mut row: Vec<TileType> = line
             .chars()
             .take(width as usize) // Ensure we only process up to `width` characters
