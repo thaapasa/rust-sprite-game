@@ -1,5 +1,5 @@
 use ggez::{conf, ContextBuilder};
-use ggez::event::{self, EventHandler};
+use ggez::event::{self};
 
 use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH};
 use crate::game::SpriteGame;
@@ -10,7 +10,9 @@ mod event_handler;
 mod game;
 mod game_assets;
 mod input_handler;
+mod level_handler;
 mod primitives;
+
 
 fn main() {
     // Make a Context.
@@ -25,7 +27,7 @@ fn main() {
     // Create an instance of your event handler.
     // Usually, you should provide it with the Context object to
     // use when setting your game up.
-    let sprite_knight = SpriteGame::new(&mut ctx);
+    let sprite_knight = SpriteGame::new(&mut ctx).expect("Could not initialize game");
 
     println!("Starting Sprite Knight game loop");
 
