@@ -1,10 +1,11 @@
-use crate::constants::{SCREEN_HEIGHT};
+use crate::constants::SCREEN_HEIGHT;
+use crate::level_handler::TileType;
 use crate::primitives::{Dimensions, Direction, Point2};
 
 #[derive(Debug)]
 pub enum ActorType {
     Player,
-    GroundBlock,
+    GroundBlock { x: usize, y: usize },
 }
 
 #[derive(Debug)]
@@ -27,6 +28,18 @@ impl Actor {
             sprite_size: Dimensions::new(128.0, 128.0),
             bbox_size: bbox,
             bbox_offset: Point2::new((128.0 - bbox.x) / 2.0, 0.0),
+        }
+    }
+
+    pub fn create_tile(tile: &TileType, x: f32, y: f32) -> Actor {
+        let bbox = Dimensions::new(32.0, 32.0);
+        Actor {
+            tag: ActorType::GroundBlock { x: tile.x, y: tile.x },
+            pos: Point2::new(x, y),
+            facing: Direction::Left,
+            sprite_size: Dimensions::new(32.0, 32.0),
+            bbox_size: bbox,
+            bbox_offset: Point2::new(0.0, 0.0),
         }
     }
 

@@ -27,4 +27,10 @@ impl SpriteGame {
             level,
         })
     }
+
+    pub fn actors(&self) -> Vec<&Actor> {
+        let mut actors = self.level.collect_actors();
+        actors.push(&self.player);
+        return actors;
+    }
 }

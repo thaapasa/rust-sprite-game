@@ -6,21 +6,31 @@ use std::path::Path;
 
 use ggez::GameResult;
 
+use crate::actor::Actor;
+
 pub struct LevelHandler {
     width: usize,
     height: usize,
     level: Vec<Vec<TileType>>,
+    actors: Vec<Vec<Option<Actor>>>,
 }
 
 impl LevelHandler {
     pub fn new(file: &str, width: usize, height: usize) -> GameResult<LevelHandler> {
         let tiles = LevelTiles::new();
         let level = LevelBuilder::load_level(file, &tiles, width, height)?;
+        let actors = LevelBuilder::create_actors(&level);
         return Ok(LevelHandler {
             width,
             height,
             level,
+            actors,
         });
+    }
+
+    pub fn collect_actors(&self) -> Vec<&Actor> {
+        return self.actors.iter().flat_map(|row| row.iter())
+            .filter_map(|i| i.as_ref()).collect();
     }
 }
 
@@ -47,6 +57,19 @@ impl LevelBuilder {
         return Ok(level);
     }
 
+    fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Vec<Option<Actor>>> {
+        return level.into_iter().enumerate().map(|(y, row)|
+            row.into_iter().enumerate().map(|(x, tile)|
+                LevelBuilder::create_actor(tile, x, level.len() - y)).collect()).collect();
+    }
+
+    fn create_actor(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
+        match tile.char {
+            ' ' => None,
+            _ => Some(Actor::create_tile(tile, x as f32 * 32.0, y as f32 * 32.0)),
+        }
+    }
+
     fn read_row(tiles: &LevelTiles, line: &str, width: usize) -> Vec<TileType> {
         let mut row: Vec<TileType> = line
             .chars()
@@ -67,12 +90,12 @@ impl LevelBuilder {
 pub struct TileType {
     name: &'static str,
     char: char,
-    x: i32,
-    y: i32,
+    pub x: usize,
+    pub y: usize,
 }
 
 impl TileType {
-    fn new(name: &'static str, char: char, x: i32, y: i32) -> Self {
+    fn new(name: &'static str, char: char, x: usize, y: usize) -> Self {
         TileType { name, char, x, y }
     }
 }
@@ -84,7 +107,7 @@ pub struct LevelTiles {
 
 impl LevelTiles {
     pub fn new() -> Self {
-        let empty = TileType::new("EMPTY", ' ', -1, -1);
+        let empty = TileType::new("EMPTY", ' ', 0, 0);
         let tile_types = vec![
             empty,
             TileType::new("GROUND", '#', 5, 5),
