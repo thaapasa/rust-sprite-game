@@ -5,6 +5,7 @@ use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH};
 use crate::game::SpriteGame;
 
 mod actor;
+mod animation_handler;
 mod constants;
 mod event_handler;
 mod game;

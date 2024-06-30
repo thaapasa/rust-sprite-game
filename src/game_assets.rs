@@ -1,8 +1,8 @@
-use ggez::{Context, GameResult, graphics};
-use ggez::glam::Vec2;
-use ggez::graphics::{DrawParam, Image};
+use ggez::{Context, GameResult};
+use ggez::graphics::Image;
 
 use crate::actor::{Actor, ActorType};
+use crate::game::SpriteGame;
 
 pub struct GameAssets {
     pub background: Image,
@@ -22,25 +22,10 @@ impl GameAssets {
         })
     }
 
-    pub fn actor_image(&self, actor: &Actor) -> &Image {
+    pub fn actor_image(&self, actor: &Actor, game: &SpriteGame) -> &Image {
         match actor.tag {
-            ActorType::Player => &self.player_idle_tiles,
+            ActorType::Player => (game.player_animation.tileset_image)(self),
             ActorType::GroundBlock { x, y } => &self.ground_tiles,
         }
-    }
-
-    pub fn draw_actor(
-        &self,
-        actor: &Actor,
-        canvas: &mut graphics::Canvas,
-        frame_offset: usize,
-        scale: Vec2,
-    ) {
-        let img = self.actor_image(actor);
-        let src = actor.tile_offset(&img, frame_offset);
-        let dest = actor.screen_coords(&scale);
-        let params = DrawParam::new().src(src).dest(dest).scale(scale);
-
-        canvas.draw(img, params)
     }
 }

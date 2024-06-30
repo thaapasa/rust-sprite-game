@@ -21,6 +21,7 @@ impl EventHandler for SpriteGame {
             }
 
             player_handle_input(&mut self.player, &self.input, seconds);
+            self.player_animation.update(seconds);
         }
         Ok(())
     }
@@ -33,7 +34,7 @@ impl EventHandler for SpriteGame {
             y: scale_factor,
         };
         canvas.draw(&self.assets.background, DrawParam::new().scale(scale));
-        self.traverse_actors(|a| self.assets.draw_actor(a, &mut canvas, 0, scale));
+        self.traverse_actors(|a| self.draw_actor(a, &mut canvas, scale));
         // Draw code here...
         canvas.finish(ctx)
     }
