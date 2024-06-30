@@ -13,7 +13,6 @@ mod input_handler;
 mod level_handler;
 mod primitives;
 
-
 fn main() {
     // Make a Context.
     let (mut ctx, event_loop) = ContextBuilder::new("sprite_game", "Tuukka Haapasalo")
@@ -22,6 +21,15 @@ fn main() {
         .add_resource_path("resources")
         .build()
         .expect("Could not create ggez context!");
+
+    // Get the scale factor
+    let scale_factor = ctx.gfx.window().scale_factor();
+    let new_width = SCREEN_WIDTH * scale_factor as f32;
+    let new_height = SCREEN_HEIGHT * scale_factor as f32;
+    ctx.gfx
+        .set_drawable_size(new_width, new_height)
+        .expect("Could not set screen size");
+
     println!("Game resource path: {:?}", ctx.fs);
 
     // Create an instance of your event handler.

@@ -1,5 +1,6 @@
 use ggez::{Context, GameResult, graphics};
 use ggez::event::EventHandler;
+use ggez::glam::Vec2;
 use ggez::graphics::{Color, DrawParam};
 use ggez::input::keyboard::KeyInput;
 
@@ -26,8 +27,13 @@ impl EventHandler for SpriteGame {
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut canvas = graphics::Canvas::from_frame(ctx, Color::WHITE);
-        canvas.draw(&self.assets.background, DrawParam::new());
-        self.traverse_actors(|a| self.assets.draw_actor(a, &mut canvas, 0, 8));
+        let scale_factor = ctx.gfx.window().scale_factor() as f32;
+        let scale = Vec2 {
+            x: scale_factor,
+            y: scale_factor,
+        };
+        canvas.draw(&self.assets.background, DrawParam::new().scale(scale));
+        self.traverse_actors(|a| self.assets.draw_actor(a, &mut canvas, 0, 8, scale));
         // Draw code here...
         canvas.finish(ctx)
     }
