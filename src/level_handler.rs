@@ -28,9 +28,18 @@ impl LevelHandler {
         });
     }
 
-    pub fn collect_actors(&self) -> Vec<&Actor> {
-        return self.actors.iter().flat_map(|row| row.iter())
-            .filter_map(|i| i.as_ref()).collect();
+    pub fn traverse_actors<F>(&self, callback: &mut F)
+    where
+        F: FnMut(&Actor),
+    {
+        for row in self.actors.iter() {
+            for item in row.iter() {
+                match item {
+                    Some(a) => callback(&a),
+                    _ => (),
+                }
+            }
+        }
     }
 }
 
@@ -58,9 +67,16 @@ impl LevelBuilder {
     }
 
     fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Vec<Option<Actor>>> {
-        return level.into_iter().enumerate().map(|(y, row)|
-            row.into_iter().enumerate().map(|(x, tile)|
-                LevelBuilder::create_actor(tile, x, level.len() - y)).collect()).collect();
+        return level
+            .into_iter()
+            .enumerate()
+            .map(|(y, row)| {
+                row.into_iter()
+                    .enumerate()
+                    .map(|(x, tile)| LevelBuilder::create_actor(tile, x, level.len() - y))
+                    .collect()
+            })
+            .collect();
     }
 
     fn create_actor(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
@@ -73,12 +89,12 @@ impl LevelBuilder {
     fn read_row(tiles: &LevelTiles, line: &str, width: usize) -> Vec<TileType> {
         let mut row: Vec<TileType> = line
             .chars()
-            .take(width as usize) // Ensure we only process up to `width` characters
+            .take(width) // Ensure we only process up to `width` characters
             .map(|c| tiles.for_char(c))
             .collect();
 
         // If the length of the row is less than width, append empty tiles
-        while row.len() < width as usize {
+        while row.len() < width {
             row.push(tiles.empty);
         }
 

@@ -28,9 +28,11 @@ impl SpriteGame {
         })
     }
 
-    pub fn actors(&self) -> Vec<&Actor> {
-        let mut actors = self.level.collect_actors();
-        actors.push(&self.player);
-        return actors;
+    pub fn traverse_actors<F>(&self, mut callback: F)
+    where
+        F: FnMut(&Actor),
+    {
+        self.level.traverse_actors(&mut callback);
+        callback(&self.player);
     }
 }

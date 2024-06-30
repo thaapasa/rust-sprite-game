@@ -27,9 +27,7 @@ impl EventHandler for SpriteGame {
     fn draw(&mut self, ctx: &mut Context) -> GameResult {
         let mut canvas = graphics::Canvas::from_frame(ctx, Color::WHITE);
         canvas.draw(&self.assets.background, DrawParam::new());
-        for actor in self.actors() {
-            self.assets.draw_actor(actor, &mut canvas, 0, 8);
-        }
+        self.traverse_actors(|a| self.assets.draw_actor(a, &mut canvas, 0, 8));
         // Draw code here...
         canvas.finish(ctx)
     }
