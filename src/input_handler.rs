@@ -8,6 +8,7 @@ pub struct InputState {
     pub move_x: Option<Direction>,
     pub jump: bool,
     pub request_quit: bool,
+    pub running: bool,
 }
 
 impl Default for InputState {
@@ -16,6 +17,7 @@ impl Default for InputState {
             move_x: None,
             jump: false,
             request_quit: false,
+            running: false,
         }
     }
 }
@@ -32,6 +34,9 @@ impl InputState {
             Some(KeyCode::Right) => {
                 self.move_x = Some(Direction::Right);
             }
+            Some(KeyCode::LShift | KeyCode::LShift) => {
+                self.running = true;
+            }
             Some(KeyCode::Escape | KeyCode::Q) => self.request_quit = true,
             _ => (), // Do nothing
         }
@@ -42,6 +47,9 @@ impl InputState {
         match input.keycode {
             Some(KeyCode::Up) => {
                 self.jump = false;
+            }
+            Some(KeyCode::LShift | KeyCode::LShift) => {
+                self.running = false;
             }
             Some(KeyCode::Left | KeyCode::Right) => {
                 self.move_x = None;
