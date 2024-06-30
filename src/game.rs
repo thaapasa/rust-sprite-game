@@ -7,6 +7,7 @@ use crate::game_assets::GameAssets;
 use crate::input_handler::InputState;
 use crate::level_handler::LevelHandler;
 use crate::player::Player;
+use crate::primitives::{Direction, Point2};
 
 pub struct SpriteGame {
     pub assets: GameAssets,
@@ -43,8 +44,15 @@ impl SpriteGame {
         let img = self.assets.actor_image(actor, &self);
         let src = actor.tile_offset(&img, &self);
         let dest = actor.screen_coords(&scale);
-        let params = DrawParam::new().src(src).dest(dest).scale(scale);
+        let params = DrawParam::new().src(src).dest(dest);
 
-        canvas.draw(img, params)
+        let facing = match actor.facing {
+            Direction::Left => params
+                .scale(Vec2::new(-scale.x, scale.y))
+                .offset(Point2::new(1.0, 0.0)),
+            _ => params.scale(scale),
+        };
+
+        canvas.draw(img, facing)
     }
 }

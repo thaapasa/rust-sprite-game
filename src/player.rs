@@ -25,7 +25,7 @@ impl Player {
             actor: Actor {
                 tag: ActorType::Player,
                 pos: Point2::new(5.0 * 32.0, 2.0 * 32.0),
-                facing: Direction::Left,
+                facing: Direction::Right,
                 sprite_size: Dimensions::new(128.0, 128.0),
                 bbox_size: bbox,
                 draw_offset: Point2::new((bbox.x - 128.0) / 2.0, 0.0),
@@ -41,7 +41,7 @@ impl Player {
     }
 
     fn update_player_action(&mut self, input: &InputState) {
-        match input.move_x {
+        match input.move_x() {
             None => {
                 if !matches!(self.state, PlayerState::STANDING) {
                     self.state = PlayerState::STANDING;

@@ -5,7 +5,8 @@ use crate::primitives::Direction;
 
 #[derive(Debug)]
 pub struct InputState {
-    pub move_x: Option<Direction>,
+    pub left: bool,
+    pub right: bool,
     pub jump: bool,
     pub request_quit: bool,
     pub running: bool,
@@ -14,7 +15,8 @@ pub struct InputState {
 impl Default for InputState {
     fn default() -> Self {
         InputState {
-            move_x: None,
+            left: false,
+            right: false,
             jump: false,
             request_quit: false,
             running: false,
@@ -23,16 +25,24 @@ impl Default for InputState {
 }
 
 impl InputState {
+    pub fn move_x(&self) -> Option<Direction> {
+        match (self.left, self.right) {
+            (false, true) => Some(Direction::Right),
+            (true, false) => Some(Direction::Left),
+            _ => None,
+        }
+    }
+
     pub fn handle_key_down(&mut self, input: KeyInput) -> GameResult {
         match input.keycode {
             Some(KeyCode::Up) => {
                 self.jump = true;
             }
             Some(KeyCode::Left) => {
-                self.move_x = Some(Direction::Left);
+                self.left = true;
             }
             Some(KeyCode::Right) => {
-                self.move_x = Some(Direction::Right);
+                self.right = true;
             }
             Some(KeyCode::LShift | KeyCode::LShift) => {
                 self.running = true;
@@ -51,8 +61,11 @@ impl InputState {
             Some(KeyCode::LShift | KeyCode::LShift) => {
                 self.running = false;
             }
-            Some(KeyCode::Left | KeyCode::Right) => {
-                self.move_x = None;
+            Some(KeyCode::Left) => {
+                self.left = false;
+            }
+            Some(KeyCode::Right) => {
+                self.right = false;
             }
             _ => (), // Do nothing
         }
