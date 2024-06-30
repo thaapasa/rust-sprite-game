@@ -12,6 +12,7 @@ mod game;
 mod game_assets;
 mod input_handler;
 mod level_handler;
+mod player;
 mod primitives;
 
 fn main() {

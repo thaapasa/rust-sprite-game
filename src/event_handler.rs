@@ -4,11 +4,8 @@ use ggez::glam::Vec2;
 use ggez::graphics::{Color, DrawParam};
 use ggez::input::keyboard::KeyInput;
 
-use crate::actor::Actor;
 use crate::constants::DESIRED_FPS;
 use crate::game::SpriteGame;
-use crate::input_handler::InputState;
-use crate::primitives::{Direction, Point2};
 
 impl EventHandler for SpriteGame {
     fn update(&mut self, ctx: &mut Context) -> GameResult {
@@ -20,8 +17,8 @@ impl EventHandler for SpriteGame {
                 ctx.request_quit()
             }
 
-            player_handle_input(&mut self.player, &self.input, seconds);
-            self.player_animation.update(seconds);
+            self.player.handle_input(&self.input, seconds);
+            self.player.animation.update(seconds);
         }
         Ok(())
     }
@@ -50,19 +47,5 @@ impl EventHandler for SpriteGame {
 
     fn key_up_event(&mut self, _ctx: &mut Context, input: KeyInput) -> GameResult {
         self.input.handle_key_up(input)
-    }
-}
-
-fn player_handle_input(actor: &mut Actor, input: &InputState, seconds: f32) {
-    match input.move_x {
-        None => (),
-        Some(Direction::Left) => {
-            actor.facing = Direction::Left;
-            actor.pos += Point2::new(-seconds * 100.0, 0.0)
-        }
-        Some(Direction::Right) => {
-            actor.facing = Direction::Right;
-            actor.pos += Point2::new(seconds * 100.0, 0.0)
-        }
     }
 }

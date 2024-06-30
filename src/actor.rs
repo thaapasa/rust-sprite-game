@@ -53,20 +53,7 @@ pub struct Actor {
     /// the actor sprite is drawn to.
     pub draw_offset: Point2,
 }
-
 impl Actor {
-    pub fn create_player() -> Actor {
-        let bbox = Dimensions::new(42.0, 74.0);
-        Actor {
-            tag: ActorType::Player,
-            pos: Point2::new(5.0 * 32.0, 2.0 * 32.0),
-            facing: Direction::Left,
-            sprite_size: Dimensions::new(128.0, 128.0),
-            bbox_size: bbox,
-            draw_offset: Point2::new((bbox.x - 128.0) / 2.0, 0.0),
-        }
-    }
-
     pub fn create_tile(tile: &TileType, x: f32, y: f32) -> Actor {
         let bbox = Dimensions::new(32.0, 32.0);
         Actor {
@@ -94,7 +81,7 @@ impl Actor {
         let y_size = self.sprite_size.y / image.height() as f32;
         match self.tag {
             ActorType::Player => Rect {
-                x: game.player_animation.get_current_frame() as f32 * x_size,
+                x: game.player.animation.get_current_frame() as f32 * x_size,
                 y: 0.0,
                 w: x_size,
                 h: y_size,

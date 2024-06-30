@@ -1,6 +1,6 @@
 use ggez::glam::Vec2;
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum Direction {
     Left,
     Right,
