@@ -1,6 +1,6 @@
 use ggez::{Context, GameResult, graphics};
 use ggez::glam::Vec2;
-use ggez::graphics::{DrawParam, Image, Rect};
+use ggez::graphics::{DrawParam, Image};
 
 use crate::actor::{Actor, ActorType};
 
@@ -33,18 +33,14 @@ impl GameAssets {
         &self,
         actor: &Actor,
         canvas: &mut graphics::Canvas,
-        offset: u8,
-        sprite_count: u8,
+        frame_offset: usize,
         scale: Vec2,
     ) {
-        let sprite_wid = 1.0 / sprite_count as f32;
-        let tile_offs = offset as f32 * sprite_wid;
-        let pos = actor.screen_coords(&scale);
-        let params = DrawParam::new()
-            .src(Rect::new(tile_offs, 0.0, tile_offs + sprite_wid, 1.0))
-            .dest(pos)
-            .scale(scale);
+        let img = self.actor_image(actor);
+        let src = actor.tile_offset(&img, frame_offset);
+        let dest = actor.screen_coords(&scale);
+        let params = DrawParam::new().src(src).dest(dest).scale(scale);
 
-        canvas.draw(self.actor_image(actor), params)
+        canvas.draw(img, params)
     }
 }

@@ -30,6 +30,7 @@ fn main() {
         .set_drawable_size(new_width, new_height)
         .expect("Could not set screen size");
 
+    println!("Display scale factor: {}", scale_factor);
     println!("Game resource path: {:?}", ctx.fs);
 
     // Create an instance of your event handler.

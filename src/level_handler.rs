@@ -67,19 +67,20 @@ impl LevelBuilder {
     }
 
     fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Vec<Option<Actor>>> {
+        let height = level.len();
         return level
             .into_iter()
             .enumerate()
             .map(|(y, row)| {
                 row.into_iter()
                     .enumerate()
-                    .map(|(x, tile)| LevelBuilder::create_actor(tile, x, level.len() - y))
+                    .map(|(x, tile)| LevelBuilder::create_tile(tile, x, height - y - 1))
                     .collect()
             })
             .collect();
     }
 
-    fn create_actor(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
+    fn create_tile(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
         match tile.char {
             ' ' => None,
             _ => Some(Actor::create_tile(tile, x as f32 * 32.0, y as f32 * 32.0)),
@@ -106,7 +107,9 @@ impl LevelBuilder {
 pub struct TileType {
     name: &'static str,
     char: char,
+    /// Tile x index in the tile set; from upper left corner, starting at 0.
     pub x: usize,
+    /// Tile y index in the tile set; from upper left corner, starting at 0.
     pub y: usize,
 }
 
@@ -117,7 +120,7 @@ impl TileType {
 }
 
 pub struct LevelTiles {
-    pub empty: TileType,
+    empty: TileType,
     tile_map: HashMap<char, TileType>,
 }
 
