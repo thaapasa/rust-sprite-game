@@ -11,6 +11,17 @@ pub enum PlayerState {
     JUMPING,
 }
 
+impl PlayerState {
+    fn jump_speed(&self) -> f32 {
+        return match self {
+            PlayerState::STANDING => 500.0,
+            PlayerState::WALKING => 580.0,
+            PlayerState::RUNNING => 700.0,
+            PlayerState::JUMPING => 600.0,
+        };
+    }
+}
+
 #[derive(Debug)]
 pub struct Player {
     pub actor: Actor,
@@ -18,6 +29,7 @@ pub struct Player {
     pub state: PlayerState,
     pub velocity_x: f32,
     pub velocity_y: f32,
+    pub grounded: bool,
 }
 
 // Speeds are pixels per second
@@ -43,6 +55,7 @@ impl Player {
             state: PlayerState::STANDING,
             velocity_x: 0.0,
             velocity_y: 0.0,
+            grounded: true,
         };
     }
 
@@ -52,48 +65,78 @@ impl Player {
     }
 
     fn update_player_action(&mut self, input: &InputState) {
+        if input.jump {
+            return self.jump();
+        }
         match input.move_x() {
-            None => self.idle(),
             Some(dir) => {
                 self.actor.facing = dir;
                 if input.running {
-                    self.run(dir);
+                    return self.run(dir);
                 } else {
-                    self.walk(dir);
+                    return self.walk(dir);
                 }
             }
+            None => (),
         }
+        self.idle();
     }
 
     fn idle(&mut self) {
         self.velocity_x = 0.0;
-        if !matches!(self.state, PlayerState::STANDING) {
+        if !matches!(self.state, PlayerState::STANDING) && self.grounded {
             self.state = PlayerState::STANDING;
             self.animation = Animation::player_idle();
         }
     }
 
     fn walk(&mut self, direction: Direction) {
-        if !matches!(self.state, PlayerState::WALKING) {
-            self.actor.facing = direction;
-            self.velocity_x = direction.mult() * WALKING_SPEED;
+        self.velocity_x = direction.mult() * WALKING_SPEED;
+        self.actor.facing = direction;
+        if !matches!(self.state, PlayerState::WALKING) && self.grounded {
             self.state = PlayerState::WALKING;
             self.animation = Animation::player_walking();
         }
     }
 
     fn run(&mut self, direction: Direction) {
-        if !matches!(self.state, PlayerState::RUNNING) {
-            self.actor.facing = direction;
-            self.velocity_x = direction.mult() * RUNNING_SPEED;
+        self.actor.facing = direction;
+        self.velocity_x = direction.mult() * RUNNING_SPEED;
+        if !matches!(self.state, PlayerState::RUNNING) && self.grounded {
             self.state = PlayerState::RUNNING;
             self.animation = Animation::player_running();
         }
     }
 
-    fn move_player(&mut self, seconds: f32) {
-        if self.velocity_x != 0.0 || self.velocity_y != 0.0 {
-            self.actor.pos += Point2::new(seconds * self.velocity_x, seconds * self.velocity_y);
+    fn jump(&mut self) {
+        if !matches!(self.state, PlayerState::JUMPING) && self.grounded {
+            self.velocity_y += self.state.jump_speed();
+            self.state = PlayerState::JUMPING;
+            self.animation = Animation::player_jumping();
         }
+    }
+
+    fn move_player(&mut self, seconds: f32) {
+        // Update gravity
+        self.velocity_y -= GRAVITY * seconds.min(MAX_VELOCITY_Y);
+        // Move player along x
+        self.actor.pos.x += self.velocity_x * seconds;
+        // Check for collision on x-axis
+        self.check_collision(true);
+        // Move player along y
+        self.actor.pos.y += self.velocity_y * seconds;
+        // Check for collision on x-axis
+        self.check_collision(false);
+
+        self.grounded = self.is_grounded();
+        if self.grounded {
+            self.velocity_y = 0.0;
+        }
+    }
+
+    fn check_collision(&self, along_x: bool) {}
+
+    fn is_grounded(&self) -> bool {
+        return true;
     }
 }

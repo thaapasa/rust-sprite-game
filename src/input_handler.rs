@@ -44,7 +44,7 @@ impl InputState {
             Some(KeyCode::Right) => {
                 self.right = true;
             }
-            Some(KeyCode::LShift | KeyCode::LShift) => {
+            Some(KeyCode::LShift | KeyCode::RShift) => {
                 self.running = true;
             }
             Some(KeyCode::Escape | KeyCode::Q) => self.request_quit = true,
@@ -58,7 +58,7 @@ impl InputState {
             Some(KeyCode::Up) => {
                 self.jump = false;
             }
-            Some(KeyCode::LShift | KeyCode::LShift) => {
+            Some(KeyCode::LShift | KeyCode::RShift) => {
                 self.running = false;
             }
             Some(KeyCode::Left) => {

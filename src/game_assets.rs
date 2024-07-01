@@ -9,6 +9,7 @@ pub struct GameAssets {
     pub player_idle_tiles: Image,
     pub player_walk_tiles: Image,
     pub player_run_tiles: Image,
+    pub player_jump_tiles: Image,
     pub ground_tiles: Image,
 }
 
@@ -19,6 +20,7 @@ impl GameAssets {
             player_idle_tiles: Image::from_path(ctx, "/idle-tileset.png")?,
             player_run_tiles: Image::from_path(ctx, "/run-tileset.png")?,
             player_walk_tiles: Image::from_path(ctx, "/walk-tileset.png")?,
+            player_jump_tiles: Image::from_path(ctx, "/jump-tileset.png")?,
             ground_tiles: Image::from_path(ctx, "/background-tileset.png")?,
         })
     }

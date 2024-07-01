@@ -48,6 +48,17 @@ impl Animation {
         };
     }
 
+    pub fn player_jumping() -> Animation {
+        return Animation {
+            tileset_image: |a| &a.player_jump_tiles,
+            frame_count: 8,
+            frame_duration: 0.05,
+            current_frame: 0,
+            elapsed_time: 0.0,
+            loop_animation: false,
+        };
+    }
+
     /// Update the animation based on elapsed time.
     pub fn update(&mut self, elapsed: f32) {
         self.elapsed_time += elapsed;
