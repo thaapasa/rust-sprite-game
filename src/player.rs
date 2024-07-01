@@ -16,6 +16,8 @@ pub struct Player {
     pub actor: Actor,
     pub animation: Animation,
     pub state: PlayerState,
+    pub velocity_x: f32,
+    pub velocity_y: f32,
 }
 
 // Speeds are pixels per second
@@ -39,6 +41,8 @@ impl Player {
             },
             animation: Animation::player_idle(),
             state: PlayerState::STANDING,
+            velocity_x: 0.0,
+            velocity_y: 0.0,
         };
     }
 
@@ -49,42 +53,47 @@ impl Player {
 
     fn update_player_action(&mut self, input: &InputState) {
         match input.move_x() {
-            None => {
-                if !matches!(self.state, PlayerState::STANDING) {
-                    self.state = PlayerState::STANDING;
-                    self.animation = Animation::player_idle();
-                }
-            }
+            None => self.idle(),
             Some(dir) => {
                 self.actor.facing = dir;
                 if input.running {
-                    if !matches!(self.state, PlayerState::RUNNING) {
-                        self.state = PlayerState::RUNNING;
-                        self.animation = Animation::player_running();
-                    }
+                    self.run(dir);
                 } else {
-                    if !matches!(self.state, PlayerState::WALKING) {
-                        self.state = PlayerState::WALKING;
-                        self.animation = Animation::player_walking();
-                    }
+                    self.walk(dir);
                 }
             }
         }
     }
 
+    fn idle(&mut self) {
+        self.velocity_x = 0.0;
+        if !matches!(self.state, PlayerState::STANDING) {
+            self.state = PlayerState::STANDING;
+            self.animation = Animation::player_idle();
+        }
+    }
+
+    fn walk(&mut self, direction: Direction) {
+        if !matches!(self.state, PlayerState::WALKING) {
+            self.actor.facing = direction;
+            self.velocity_x = direction.mult() * WALKING_SPEED;
+            self.state = PlayerState::WALKING;
+            self.animation = Animation::player_walking();
+        }
+    }
+
+    fn run(&mut self, direction: Direction) {
+        if !matches!(self.state, PlayerState::RUNNING) {
+            self.actor.facing = direction;
+            self.velocity_x = direction.mult() * RUNNING_SPEED;
+            self.state = PlayerState::RUNNING;
+            self.animation = Animation::player_running();
+        }
+    }
+
     fn move_player(&mut self, seconds: f32) {
-        let dir_mult = match self.actor.facing {
-            Direction::Left => -1.0,
-            _ => 1.0,
-        };
-        match self.state {
-            PlayerState::WALKING => {
-                self.actor.pos += Point2::new(seconds * WALKING_SPEED * dir_mult, 0.0);
-            }
-            PlayerState::RUNNING => {
-                self.actor.pos += Point2::new(seconds * RUNNING_SPEED * dir_mult, 0.0);
-            }
-            _ => (),
+        if self.velocity_x != 0.0 || self.velocity_y != 0.0 {
+            self.actor.pos += Point2::new(seconds * self.velocity_x, seconds * self.velocity_y);
         }
     }
 }
