@@ -50,6 +50,18 @@ impl LevelHandler {
             .filter(|a| a.bbox.collides_with(bbox))
             .collect();
     }
+
+    pub fn collides_with(&self, bbox: &Rect) -> bool {
+        if !self.bbox.collides_with(&bbox) {
+            return false;
+        }
+        for a in &self.actors {
+            if a.bbox.collides_with(bbox) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
 
 struct LevelBuilder {}

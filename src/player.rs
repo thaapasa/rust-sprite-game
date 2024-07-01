@@ -131,8 +131,7 @@ impl Player {
     }
 
     fn calc_player_pos(&mut self, seconds: f32, level: &LevelHandler) {
-        // Update gravity
-        self.velocity_y -= GRAVITY * seconds.min(MAX_VELOCITY_Y);
+        self.velocity_y = self.velocity_y.max(-MAX_VELOCITY_Y);
         // Move player along x
         self.move_by(self.velocity_x * seconds, 0.0);
         // Check for collision on x-axis
@@ -141,8 +140,10 @@ impl Player {
         self.move_by(0.0, self.velocity_y * seconds);
         // Check for collision on x-axis
         self.check_collision(false, level);
+        // Update gravity (takes effect on next round, will be reset if player is grounded)
+        self.velocity_y -= GRAVITY * seconds;
 
-        self.grounded = self.is_grounded();
+        self.grounded = self.is_grounded(level);
         if self.grounded {
             self.velocity_y = 0.0;
         }
@@ -158,7 +159,13 @@ impl Player {
         let collisions = level.get_collisions(&self.actor.bbox);
     }
 
-    fn is_grounded(&self) -> bool {
-        return true;
+    fn is_grounded(&self, level: &LevelHandler) -> bool {
+        let ground_check = Rect {
+            x: self.actor.bbox.x + 5.0,
+            y: self.actor.bbox.y,
+            w: self.actor.bbox.w - 10.0,
+            h: 1.0,
+        };
+        return level.collides_with(&ground_check);
     }
 }
