@@ -17,7 +17,7 @@ impl EventHandler for SpriteGame {
                 ctx.request_quit()
             }
 
-            self.player.handle_input(&self.input, seconds);
+            self.player.handle_input(&self.input, seconds, &self.level);
             self.player.animation.update(seconds);
         }
         Ok(())

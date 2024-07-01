@@ -1,6 +1,13 @@
+use ggez::graphics::Rect;
+
 use crate::actor::{Actor, ActorType};
 use crate::animation_handler::Animation;
+use crate::constants::{
+    GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH, PLAYER_BBOX_HEIGHT, PLAYER_BBOX_WIDTH,
+    PLAYER_TILE_HEIGHT, PLAYER_TILE_WIDTH,
+};
 use crate::input_handler::InputState;
+use crate::level_handler::LevelHandler;
 use crate::primitives::{Dimensions, Direction, Point2};
 
 #[derive(Debug)]
@@ -41,15 +48,22 @@ const MAX_VELOCITY_Y: f32 = 1200.0;
 
 impl Player {
     pub fn create() -> Player {
-        let bbox = Dimensions::new(42.0, 74.0);
+        let x = 5.0 * GROUND_TILE_WIDTH;
+        let y = 5.0 * GROUND_TILE_HEIGHT;
+        let bbox = Dimensions::new(PLAYER_BBOX_WIDTH, PLAYER_BBOX_HEIGHT);
         return Player {
             actor: Actor {
                 tag: ActorType::Player,
-                pos: Point2::new(5.0 * 32.0, 2.0 * 32.0),
+                pos: Point2::new(x, y),
                 facing: Direction::Right,
-                sprite_size: Dimensions::new(128.0, 128.0),
-                bbox_size: bbox,
-                draw_offset: Point2::new((bbox.x - 128.0) / 2.0, 0.0),
+                sprite_size: Dimensions::new(PLAYER_TILE_WIDTH, PLAYER_TILE_HEIGHT),
+                draw_offset: Point2::new((bbox.x - PLAYER_TILE_WIDTH) / 2.0, 0.0),
+                bbox: Rect {
+                    x,
+                    y,
+                    w: bbox.x,
+                    h: bbox.y,
+                },
             },
             animation: Animation::player_idle(),
             state: PlayerState::STANDING,
@@ -59,9 +73,9 @@ impl Player {
         };
     }
 
-    pub fn handle_input(&mut self, input: &InputState, seconds: f32) {
+    pub fn handle_input(&mut self, input: &InputState, seconds: f32, level: &LevelHandler) {
         self.update_player_action(input);
-        self.move_player(seconds);
+        self.calc_player_pos(seconds, level);
     }
 
     fn update_player_action(&mut self, input: &InputState) {
@@ -79,7 +93,7 @@ impl Player {
             }
             None => (),
         }
-        self.idle();
+        return self.idle();
     }
 
     fn idle(&mut self) {
@@ -116,17 +130,17 @@ impl Player {
         }
     }
 
-    fn move_player(&mut self, seconds: f32) {
+    fn calc_player_pos(&mut self, seconds: f32, level: &LevelHandler) {
         // Update gravity
         self.velocity_y -= GRAVITY * seconds.min(MAX_VELOCITY_Y);
         // Move player along x
-        self.actor.pos.x += self.velocity_x * seconds;
+        self.move_by(self.velocity_x * seconds, 0.0);
         // Check for collision on x-axis
-        self.check_collision(true);
+        self.check_collision(true, level);
         // Move player along y
-        self.actor.pos.y += self.velocity_y * seconds;
+        self.move_by(0.0, self.velocity_y * seconds);
         // Check for collision on x-axis
-        self.check_collision(false);
+        self.check_collision(false, level);
 
         self.grounded = self.is_grounded();
         if self.grounded {
@@ -134,7 +148,15 @@ impl Player {
         }
     }
 
-    fn check_collision(&self, along_x: bool) {}
+    fn move_by(&mut self, x: f32, y: f32) {
+        self.actor.pos.x += x;
+        self.actor.pos.y += y;
+        self.actor.update_bbox();
+    }
+
+    fn check_collision(&self, along_x: bool, level: &LevelHandler) {
+        let collisions = level.get_collisions(&self.actor.bbox);
+    }
 
     fn is_grounded(&self) -> bool {
         return true;

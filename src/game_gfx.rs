@@ -3,7 +3,9 @@ use ggez::glam::Vec2;
 use ggez::graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, MeshBuilder, Rect};
 
 use crate::actor::{Actor, ActorType};
-use crate::constants::SCREEN_HEIGHT;
+use crate::constants::{
+    GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH, PLAYER_BBOX_HEIGHT, PLAYER_BBOX_WIDTH, SCREEN_HEIGHT,
+};
 use crate::game::SpriteGame;
 use crate::game_assets::GameAssets;
 use crate::primitives::{Direction, Point2};
@@ -17,8 +19,10 @@ pub struct GraphicsHandler {
 impl GraphicsHandler {
     pub fn new(ctx: &mut Context) -> GameResult<GraphicsHandler> {
         let assets = GameAssets::new(ctx).expect("Could not initialize Game Assets");
-        let player_bbox = Self::create_bbox(ctx, 42.0, 74.0, Color::GREEN)?;
-        let ground_bbox = Self::create_bbox(ctx, 32.0, 32.0, Color::BLUE)?;
+        let player_bbox =
+            Self::create_bbox(ctx, PLAYER_BBOX_WIDTH, PLAYER_BBOX_HEIGHT, Color::GREEN)?;
+        let ground_bbox =
+            Self::create_bbox(ctx, GROUND_TILE_WIDTH, GROUND_TILE_HEIGHT, Color::BLUE)?;
         return Ok(GraphicsHandler {
             assets,
             player_bbox,
@@ -71,7 +75,7 @@ impl GraphicsHandler {
     }
 
     pub fn draw_bbox(&self, actor: &Actor, canvas: &mut Canvas, scale: Vec2) {
-        let rect = Self::get_screen_coords(&actor.bbox_rect(), &scale);
+        let rect = Self::get_screen_coords(&actor.bbox, &scale);
         let bbox = match actor.tag {
             ActorType::Player => &self.player_bbox,
             ActorType::GroundBlock { x, y } => &self.ground_bbox,

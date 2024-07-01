@@ -5,14 +5,18 @@ use std::io::BufRead;
 use std::path::Path;
 
 use ggez::GameResult;
+use ggez::graphics::Rect;
 
 use crate::actor::Actor;
+use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH};
+use crate::primitives::RectExt;
 
 pub struct LevelHandler {
     width: usize,
     height: usize,
     level: Vec<Vec<TileType>>,
-    actors: Vec<Vec<Option<Actor>>>,
+    pub actors: Vec<Actor>,
+    bbox: Rect,
 }
 
 impl LevelHandler {
@@ -25,21 +29,26 @@ impl LevelHandler {
             height,
             level,
             actors,
+            bbox: Rect {
+                x: 0.0,
+                y: 0.0,
+                w: width as f32 * GROUND_TILE_WIDTH,
+                h: height as f32 * GROUND_TILE_HEIGHT,
+            },
         });
     }
 
-    pub fn traverse_actors<F>(&self, callback: &mut F)
-    where
-        F: FnMut(&Actor),
-    {
-        for row in self.actors.iter() {
-            for item in row.iter() {
-                match item {
-                    Some(a) => callback(&a),
-                    _ => (),
-                }
-            }
+    pub fn get_collisions(&self, bbox: &Rect) -> Vec<&Actor> {
+        let mut res = Vec::new();
+
+        if !self.bbox.collides_with(&bbox) {
+            return res;
         }
+        return self
+            .actors
+            .iter()
+            .filter(|a| a.bbox.collides_with(bbox))
+            .collect();
     }
 }
 
@@ -66,24 +75,24 @@ impl LevelBuilder {
         return Ok(level);
     }
 
-    fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Vec<Option<Actor>>> {
+    fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Actor> {
         let height = level.len();
-        return level
-            .into_iter()
-            .enumerate()
-            .map(|(y, row)| {
-                row.into_iter()
-                    .enumerate()
-                    .map(|(x, tile)| LevelBuilder::create_tile(tile, x, height - y - 1))
-                    .collect()
-            })
-            .collect();
+        let mut actors = Vec::new();
+        for (y, row) in level.into_iter().enumerate() {
+            for (x, tile) in row.into_iter().enumerate() {
+                match LevelBuilder::create_tile(tile, x, height - y - 1) {
+                    Some(actor) => actors.push(actor),
+                    _ => (),
+                }
+            }
+        }
+        return actors;
     }
 
     fn create_tile(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
         match tile.char {
             ' ' => None,
-            _ => Some(Actor::create_tile(tile, x as f32 * 32.0, y as f32 * 32.0)),
+            _ => Some(Actor::create_ground(tile, x, y)),
         }
     }
 

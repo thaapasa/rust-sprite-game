@@ -4,7 +4,7 @@ use std::fmt::Formatter;
 use ggez::glam::Vec2;
 use ggez::graphics::{Image, Rect};
 
-use crate::constants::SCREEN_HEIGHT;
+use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH, SCREEN_HEIGHT};
 use crate::game::SpriteGame;
 use crate::level_handler::TileType;
 use crate::primitives::{Dimensions, Direction, Point2};
@@ -46,27 +46,39 @@ pub struct Actor {
     pub facing: Direction,
     /// Sprite draw size, in game space.
     pub sprite_size: Dimensions,
-    /// Size of the actor's bounding box.
-    pub bbox_size: Dimensions,
     /// Sprite offset from actor's bounding box, relative to the actor's position.
     /// {0,0} means that the bounding box starts at the same place where
     /// the actor sprite is drawn to.
     pub draw_offset: Point2,
+    /// Bounding box in game space, calculated from other fields. Used for collision calculation.
+    /// Updated each frame (for player).
+    pub bbox: Rect,
 }
 impl Actor {
-    pub fn create_tile(tile: &TileType, x: f32, y: f32) -> Actor {
-        let bbox = Dimensions::new(32.0, 32.0);
+    pub fn create_ground(tile: &TileType, x: usize, y: usize) -> Actor {
+        let pos = Point2::new(x as f32 * GROUND_TILE_WIDTH, y as f32 * GROUND_TILE_HEIGHT);
         Actor {
             tag: ActorType::GroundBlock {
                 x: tile.x,
                 y: tile.y,
             },
-            pos: Point2::new(x, y),
+            pos: pos,
             facing: Direction::Left,
-            sprite_size: Dimensions::new(32.0, 32.0),
-            bbox_size: bbox,
+            sprite_size: Dimensions::new(GROUND_TILE_WIDTH, GROUND_TILE_HEIGHT),
             draw_offset: Point2::new(0.0, 0.0),
+            bbox: Rect {
+                x: pos.x,
+                y: pos.y,
+                w: GROUND_TILE_WIDTH,
+                h: GROUND_TILE_HEIGHT,
+            },
         }
+    }
+
+    pub fn update_bbox(&mut self) {
+        self.bbox.x = self.pos.x;
+        self.bbox.y = self.pos.y;
+        // Actor size does not vary for any actor in this game
     }
 
     pub fn screen_coords(&self, scale: &Vec2) -> Point2 {
@@ -81,15 +93,6 @@ impl Actor {
             y: self.pos.y + self.draw_offset.y,
             w: self.sprite_size.x,
             h: self.sprite_size.y,
-        };
-    }
-
-    pub fn bbox_rect(&self) -> Rect {
-        return Rect {
-            x: self.pos.x,
-            y: self.pos.y,
-            w: self.bbox_size.x,
-            h: self.bbox_size.y,
         };
     }
 

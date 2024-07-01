@@ -35,7 +35,9 @@ impl SpriteGame {
     where
         F: FnMut(&Actor),
     {
-        self.level.traverse_actors(&mut callback);
+        for a in &self.level.actors {
+            callback(a);
+        }
         callback(&self.player.actor);
     }
 
