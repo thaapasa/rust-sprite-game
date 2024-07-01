@@ -25,7 +25,7 @@ impl GameAssets {
 
     pub fn actor_image(&self, actor: &Actor, game: &SpriteGame) -> &Image {
         match actor.tag {
-            ActorType::Player => (game.player.animation.tileset_image)(self),
+            ActorType::Player => (game.player.animation.tileset_image)(&self),
             ActorType::GroundBlock { x, y } => &self.ground_tiles,
         }
     }

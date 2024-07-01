@@ -1,7 +1,7 @@
 use ggez::{Context, GameResult, graphics};
 use ggez::event::EventHandler;
 use ggez::glam::Vec2;
-use ggez::graphics::{Color, DrawParam};
+use ggez::graphics::Color;
 use ggez::input::keyboard::KeyInput;
 
 use crate::constants::DESIRED_FPS;
@@ -30,9 +30,8 @@ impl EventHandler for SpriteGame {
             x: scale_factor,
             y: scale_factor,
         };
-        canvas.draw(&self.assets.background, DrawParam::new().scale(scale));
-        self.traverse_actors(|a| self.draw_actor(a, &mut canvas, scale));
-        canvas.finish(ctx)
+        self.draw_frame(&mut canvas, scale);
+        return canvas.finish(ctx);
     }
 
     fn key_down_event(

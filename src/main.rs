@@ -10,6 +10,7 @@ mod constants;
 mod event_handler;
 mod game;
 mod game_assets;
+mod game_gfx;
 mod input_handler;
 mod level_handler;
 mod player;

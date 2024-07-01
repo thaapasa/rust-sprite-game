@@ -75,6 +75,24 @@ impl Actor {
         Point2::new((x * scale.x).round(), (y * scale.y).round())
     }
 
+    pub fn draw_rect(&self) -> Rect {
+        return Rect {
+            x: self.pos.x + self.draw_offset.x,
+            y: self.pos.y + self.draw_offset.y,
+            w: self.sprite_size.x,
+            h: self.sprite_size.y,
+        };
+    }
+
+    pub fn bbox_rect(&self) -> Rect {
+        return Rect {
+            x: self.pos.x,
+            y: self.pos.y,
+            w: self.bbox_size.x,
+            h: self.bbox_size.y,
+        };
+    }
+
     /// Returns the offset of this tile to draw this actor from its tile image
     pub fn tile_offset(&self, image: &Image, game: &SpriteGame) -> Rect {
         let x_size = self.sprite_size.x / image.width() as f32;
