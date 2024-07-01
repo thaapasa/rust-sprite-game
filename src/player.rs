@@ -18,6 +18,13 @@ pub struct Player {
     pub state: PlayerState,
 }
 
+// Speeds are pixels per second
+const WALKING_SPEED: f32 = 240.0;
+const RUNNING_SPEED: f32 = 360.0;
+const JUMP_VELOCITY: f32 = 500.0;
+const GRAVITY: f32 = 2000.0;
+const MAX_VELOCITY_Y: f32 = 1200.0;
+
 impl Player {
     pub fn create() -> Player {
         let bbox = Dimensions::new(42.0, 74.0);
@@ -72,10 +79,10 @@ impl Player {
         };
         match self.state {
             PlayerState::WALKING => {
-                self.actor.pos += Point2::new(seconds * 100.0 * dir_mult, 0.0);
+                self.actor.pos += Point2::new(seconds * WALKING_SPEED * dir_mult, 0.0);
             }
             PlayerState::RUNNING => {
-                self.actor.pos += Point2::new(seconds * 150.0 * dir_mult, 0.0);
+                self.actor.pos += Point2::new(seconds * RUNNING_SPEED * dir_mult, 0.0);
             }
             _ => (),
         }

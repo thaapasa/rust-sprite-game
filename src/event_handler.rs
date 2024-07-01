@@ -32,7 +32,6 @@ impl EventHandler for SpriteGame {
         };
         canvas.draw(&self.assets.background, DrawParam::new().scale(scale));
         self.traverse_actors(|a| self.draw_actor(a, &mut canvas, scale));
-        // Draw code here...
         canvas.finish(ctx)
     }
 

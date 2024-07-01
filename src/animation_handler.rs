@@ -19,7 +19,7 @@ impl Animation {
         return Animation {
             tileset_image: |a| &a.player_idle_tiles,
             frame_count: 8,
-            frame_duration: 0.1,
+            frame_duration: 0.13,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
@@ -30,7 +30,7 @@ impl Animation {
         return Animation {
             tileset_image: |a| &a.player_walk_tiles,
             frame_count: 8,
-            frame_duration: 0.1,
+            frame_duration: 0.05,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
@@ -41,7 +41,7 @@ impl Animation {
         return Animation {
             tileset_image: |a| &a.player_run_tiles,
             frame_count: 8,
-            frame_duration: 0.1,
+            frame_duration: 0.05,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
