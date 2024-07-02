@@ -1,7 +1,9 @@
+use ggez::glam::Vec2;
 use ggez::graphics::Rect;
 
 use crate::actor::{Actor, ActorType};
 use crate::animation_handler::Animation;
+use crate::collision::find_mtv;
 use crate::constants::{
     GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH, PLAYER_BBOX_HEIGHT, PLAYER_BBOX_WIDTH,
     PLAYER_TILE_HEIGHT, PLAYER_TILE_WIDTH,
@@ -34,8 +36,7 @@ pub struct Player {
     pub actor: Actor,
     pub animation: Animation,
     pub state: PlayerState,
-    pub velocity_x: f32,
-    pub velocity_y: f32,
+    pub velocity: Vec2,
     pub grounded: bool,
 }
 
@@ -67,8 +68,7 @@ impl Player {
             },
             animation: Animation::player_idle(),
             state: PlayerState::STANDING,
-            velocity_x: 0.0,
-            velocity_y: 0.0,
+            velocity: Vec2::new(0.0, 0.0),
             grounded: true,
         };
     }
@@ -97,7 +97,7 @@ impl Player {
     }
 
     fn idle(&mut self) {
-        self.velocity_x = 0.0;
+        self.velocity.x = 0.0;
         if !matches!(self.state, PlayerState::STANDING) && self.grounded {
             self.state = PlayerState::STANDING;
             self.animation = Animation::player_idle();
@@ -105,7 +105,7 @@ impl Player {
     }
 
     fn walk(&mut self, direction: Direction) {
-        self.velocity_x = direction.mult() * WALKING_SPEED;
+        self.velocity.x = direction.mult() * WALKING_SPEED;
         self.actor.facing = direction;
         if !matches!(self.state, PlayerState::WALKING) && self.grounded {
             self.state = PlayerState::WALKING;
@@ -115,7 +115,7 @@ impl Player {
 
     fn run(&mut self, direction: Direction) {
         self.actor.facing = direction;
-        self.velocity_x = direction.mult() * RUNNING_SPEED;
+        self.velocity.x = direction.mult() * RUNNING_SPEED;
         if !matches!(self.state, PlayerState::RUNNING) && self.grounded {
             self.state = PlayerState::RUNNING;
             self.animation = Animation::player_running();
@@ -124,28 +124,28 @@ impl Player {
 
     fn jump(&mut self) {
         if !matches!(self.state, PlayerState::JUMPING) && self.grounded {
-            self.velocity_y += self.state.jump_speed();
+            self.velocity.y += self.state.jump_speed();
             self.state = PlayerState::JUMPING;
             self.animation = Animation::player_jumping();
         }
     }
 
     fn calc_player_pos(&mut self, seconds: f32, level: &LevelHandler) {
-        self.velocity_y = self.velocity_y.max(-MAX_VELOCITY_Y);
+        self.velocity.y = self.velocity.y.max(-MAX_VELOCITY_Y);
         // Move player along x
-        self.move_by(self.velocity_x * seconds, 0.0);
+        self.move_by(self.velocity.x * seconds, 0.0);
         // Check for collision on x-axis
         self.check_collision(true, level);
         // Move player along y
-        self.move_by(0.0, self.velocity_y * seconds);
+        self.move_by(0.0, self.velocity.y * seconds);
         // Check for collision on x-axis
         self.check_collision(false, level);
         // Update gravity (takes effect on next round, will be reset if player is grounded)
-        self.velocity_y -= GRAVITY * seconds;
+        self.velocity.y -= GRAVITY * seconds;
 
         self.grounded = self.is_grounded(level);
         if self.grounded {
-            self.velocity_y = 0.0;
+            self.velocity.y = 0.0;
         }
     }
 
@@ -155,15 +155,25 @@ impl Player {
         self.actor.update_bbox();
     }
 
-    fn check_collision(&self, along_x: bool, level: &LevelHandler) {
+    fn check_collision(&mut self, along_x: bool, level: &LevelHandler) {
         let collisions = level.get_collisions(&self.actor.bbox);
+        for c in collisions {
+            self.resolve_collision(c, along_x);
+        }
+    }
+
+    fn resolve_collision(&mut self, actor: &Actor, along_x: bool) {
+        match find_mtv(&self.actor.bbox, &actor.bbox, self.velocity, along_x) {
+            Some(offs) => self.move_by(offs.x, offs.y),
+            _ => (),
+        }
     }
 
     fn is_grounded(&self, level: &LevelHandler) -> bool {
         let ground_check = Rect {
-            x: self.actor.bbox.x + 5.0,
-            y: self.actor.bbox.y,
-            w: self.actor.bbox.w - 10.0,
+            x: self.actor.bbox.x,
+            y: self.actor.bbox.y - 1.0,
+            w: self.actor.bbox.w,
             h: 1.0,
         };
         return level.collides_with(&ground_check);

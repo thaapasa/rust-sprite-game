@@ -35,7 +35,7 @@ impl InputState {
 
     pub fn handle_key_down(&mut self, input: KeyInput) -> GameResult {
         match input.keycode {
-            Some(KeyCode::Up) => {
+            Some(KeyCode::Space) => {
                 self.jump = true;
             }
             Some(KeyCode::Left) => {
@@ -55,7 +55,7 @@ impl InputState {
 
     pub fn handle_key_up(&mut self, input: KeyInput) -> GameResult {
         match input.keycode {
-            Some(KeyCode::Up) => {
+            Some(KeyCode::Space) => {
                 self.jump = false;
             }
             Some(KeyCode::LShift | KeyCode::RShift) => {

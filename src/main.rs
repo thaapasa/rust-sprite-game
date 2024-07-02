@@ -6,6 +6,7 @@ use crate::game::SpriteGame;
 
 mod actor;
 mod animation_handler;
+mod collision;
 mod constants;
 mod event_handler;
 mod game;
