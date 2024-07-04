@@ -1,6 +1,6 @@
 # Credits
 
-ALl graphics have been taken from
+All graphics have been taken from
 [Craftpix](https://craftpix.net/).
 
 ## Character sprites
