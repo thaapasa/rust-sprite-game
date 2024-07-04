@@ -1,10 +1,9 @@
 use std::fmt;
 use std::fmt::Formatter;
 
-use ggez::glam::Vec2;
 use ggez::graphics::{Image, Rect};
 
-use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH, SCREEN_HEIGHT};
+use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH};
 use crate::game::SpriteGame;
 use crate::level_handler::TileType;
 use crate::primitives::{Dimensions, Direction, Point2};
@@ -79,12 +78,6 @@ impl Actor {
         self.bbox.x = self.pos.x;
         self.bbox.y = self.pos.y;
         // Actor size does not vary for any actor in this game
-    }
-
-    pub fn screen_coords(&self, scale: &Vec2) -> Point2 {
-        let x = self.pos.x + self.draw_offset.x;
-        let y = SCREEN_HEIGHT - (self.pos.y + self.draw_offset.y) - self.sprite_size.y;
-        Point2::new((x * scale.x).round(), (y * scale.y).round())
     }
 
     pub fn draw_rect(&self) -> Rect {

@@ -78,7 +78,7 @@ impl GraphicsHandler {
         let rect = Self::get_screen_coords(&actor.bbox, &scale);
         let bbox = match actor.tag {
             ActorType::Player => &self.player_bbox,
-            ActorType::GroundBlock { x, y } => &self.ground_bbox,
+            ActorType::GroundBlock { x: _, y: _ } => &self.ground_bbox,
         };
         canvas.draw(bbox, DrawParam::new().dest(rect.point()).scale(rect.size()));
     }

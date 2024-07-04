@@ -23,10 +23,10 @@ pub enum PlayerState {
 impl PlayerState {
     fn jump_speed(&self) -> f32 {
         return match self {
-            PlayerState::STANDING => 500.0,
-            PlayerState::WALKING => 580.0,
-            PlayerState::RUNNING => 700.0,
-            PlayerState::JUMPING => 600.0,
+            PlayerState::STANDING => JUMP_VELOCITY,
+            PlayerState::WALKING => JUMP_VELOCITY * 1.16,
+            PlayerState::RUNNING => JUMP_VELOCITY * 1.4,
+            PlayerState::JUMPING => JUMP_VELOCITY,
         };
     }
 }

@@ -12,9 +12,6 @@ use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH};
 use crate::primitives::RectExt;
 
 pub struct LevelHandler {
-    width: usize,
-    height: usize,
-    level: Vec<Vec<TileType>>,
     pub actors: Vec<Actor>,
     bbox: Rect,
 }
@@ -25,9 +22,6 @@ impl LevelHandler {
         let level = LevelBuilder::load_level(file, &tiles, width, height)?;
         let actors = LevelBuilder::create_actors(&level);
         return Ok(LevelHandler {
-            width,
-            height,
-            level,
             actors,
             bbox: Rect {
                 x: 0.0,
@@ -39,11 +33,10 @@ impl LevelHandler {
     }
 
     pub fn get_collisions(&self, bbox: &Rect) -> Vec<&Actor> {
-        let mut res = Vec::new();
-
         if !self.bbox.collides_with(&bbox) {
-            return res;
+            return Vec::new();
         }
+
         return self
             .actors
             .iter()
