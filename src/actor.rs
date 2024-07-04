@@ -62,7 +62,7 @@ impl Actor {
                 y: tile.y,
             },
             pos: pos,
-            facing: Direction::Left,
+            facing: Direction::Right,
             sprite_size: Dimensions::new(GROUND_TILE_WIDTH, GROUND_TILE_HEIGHT),
             draw_offset: Point2::new(0.0, 0.0),
             bbox: Rect {

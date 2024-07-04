@@ -51,10 +51,10 @@ impl GraphicsHandler {
     pub fn get_screen_coords(src: &Rect, scale: &Vec2) -> Rect {
         let y = SCREEN_HEIGHT - src.y - src.h;
         return Rect {
-            x: src.x * scale.x,
-            y: y * scale.y,
-            w: src.w * scale.x,
-            h: src.h * scale.y,
+            x: (src.x * scale.x).round(),
+            y: (y * scale.y).round(),
+            w: (src.w * scale.x).round(),
+            h: (src.h * scale.y).round(),
         };
     }
 

@@ -143,7 +143,7 @@ impl LevelTiles {
         let empty = TileType::new("EMPTY", ' ', 0, 0);
         let tile_types = vec![
             empty,
-            TileType::new("GROUND", '#', 5, 5),
+            TileType::new("GROUND", '#', 11, 1),
             TileType::new("TOP", '^', 1, 0),
             TileType::new("BOTTOM", 'v', 8, 4),
             TileType::new("LEFT", '<', 0, 1),
