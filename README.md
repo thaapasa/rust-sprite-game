@@ -4,6 +4,8 @@ A simple 2D game developed using Rust and ggez. Control a
 character, make it walk, run, and interact within a 2D
 environment.
 
+![Sprite Knight](./screenshot.png)
+
 ## Features
 
 - **Character Movement**: Use arrow keys to move the character left
