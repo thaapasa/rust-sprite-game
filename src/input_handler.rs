@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
-use ggez::GameResult;
 use ggez::input::keyboard::{KeyCode, KeyInput};
+use ggez::GameResult;
 
 use crate::primitives::Direction;
 

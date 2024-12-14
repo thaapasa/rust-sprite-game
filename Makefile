@@ -10,7 +10,11 @@ lint:
 
 .PHONY: run
 run:
-	cargo run --package rust-sprite-game --bin rust-sprite-game
+	cargo run --package rust-sprite-game --bin rust-sprite-game ${ARGS}
+
+.PHONY: run-debug
+run-debug:
+	cargo run --package rust-sprite-game --bin rust-sprite-game --features debug-bbox
 
 .PHONY: test
 test:

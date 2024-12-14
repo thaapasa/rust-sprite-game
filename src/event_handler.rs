@@ -1,8 +1,8 @@
-use ggez::{Context, GameResult, graphics};
 use ggez::event::EventHandler;
 use ggez::glam::Vec2;
 use ggez::graphics::Color;
 use ggez::input::keyboard::KeyInput;
+use ggez::{graphics, Context, GameResult};
 
 use crate::constants::DESIRED_FPS;
 use crate::game::SpriteGame;

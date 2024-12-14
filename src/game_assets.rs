@@ -1,5 +1,5 @@
-use ggez::{Context, GameResult};
 use ggez::graphics::Image;
+use ggez::{Context, GameResult};
 
 use crate::actor::{Actor, ActorType};
 use crate::game::SpriteGame;

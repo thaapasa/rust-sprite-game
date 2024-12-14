@@ -1,6 +1,6 @@
-use ggez::{Context, GameResult};
 use ggez::glam::Vec2;
 use ggez::graphics::{Canvas, Color, DrawMode, DrawParam, Mesh, MeshBuilder, Rect};
+use ggez::{Context, GameResult};
 
 use crate::actor::{Actor, ActorType};
 use crate::constants::{

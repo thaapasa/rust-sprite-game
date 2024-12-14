@@ -4,8 +4,8 @@ use std::io;
 use std::io::BufRead;
 use std::path::Path;
 
-use ggez::GameResult;
 use ggez::graphics::Rect;
+use ggez::GameResult;
 
 use crate::actor::Actor;
 use crate::constants::{GROUND_TILE_HEIGHT, GROUND_TILE_WIDTH};

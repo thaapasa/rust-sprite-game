@@ -1,6 +1,6 @@
-use ggez::{Context, GameResult};
 use ggez::glam::Vec2;
 use ggez::graphics::{Canvas, DrawParam};
+use ggez::{Context, GameResult};
 
 use crate::actor::Actor;
 use crate::constants::DRAW_BBOX;
