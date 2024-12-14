@@ -66,7 +66,7 @@ impl LevelBuilder {
         height: usize,
     ) -> GameResult<Vec<Vec<TileType>>> {
         let path = Path::new(file);
-        let file = File::open(&path)?;
+        let file = File::open(path)?;
         let reader = io::BufReader::new(file);
 
         let level = reader
