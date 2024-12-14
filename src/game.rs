@@ -43,7 +43,7 @@ impl SpriteGame {
 
     pub fn draw_frame(&mut self, canvas: &mut Canvas, scale: Vec2) {
         canvas.draw(&self.gfx.assets.background, DrawParam::new().scale(scale));
-        self.traverse_actors(|a| self.gfx.draw_actor(a, canvas, &self, scale));
+        self.traverse_actors(|a| self.gfx.draw_actor(a, canvas, self, scale));
 
         if DRAW_BBOX {
             self.traverse_actors(|a| self.gfx.draw_bbox(a, canvas, scale));

@@ -9,10 +9,10 @@ pub enum Direction {
 
 impl Direction {
     pub fn mult(&self) -> f32 {
-        return match self {
+        match self {
             Direction::Left => -1.0,
             Direction::Right => 1.0,
-        };
+        }
     }
 }
 
@@ -41,11 +41,11 @@ impl RectExt for Rect {
         if w <= 0.0 || h <= 0.0 {
             return None;
         }
-        return Some(Rect {
+        Some(Rect {
             x: min_x,
             y: min_y,
             w,
             h,
-        });
+        })
     }
 }

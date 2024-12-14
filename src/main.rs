@@ -1,5 +1,5 @@
-use ggez::{conf, ContextBuilder};
 use ggez::event::{self};
+use ggez::{conf, ContextBuilder};
 
 use crate::constants::{SCREEN_HEIGHT, SCREEN_WIDTH};
 use crate::game::SpriteGame;

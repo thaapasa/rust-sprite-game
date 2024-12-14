@@ -23,11 +23,11 @@ impl GraphicsHandler {
             Self::create_bbox(ctx, PLAYER_BBOX_WIDTH, PLAYER_BBOX_HEIGHT, Color::GREEN)?;
         let ground_bbox =
             Self::create_bbox(ctx, GROUND_TILE_WIDTH, GROUND_TILE_HEIGHT, Color::BLUE)?;
-        return Ok(GraphicsHandler {
+        Ok(GraphicsHandler {
             assets,
             player_bbox,
             ground_bbox,
-        });
+        })
     }
 
     fn create_bbox(ctx: &mut Context, width: f32, height: f32, color: Color) -> GameResult<Mesh> {
@@ -45,22 +45,22 @@ impl GraphicsHandler {
                 color,
             )?
             .build();
-        return Ok(Mesh::from_data(ctx, bbox_data));
+        Ok(Mesh::from_data(ctx, bbox_data))
     }
 
     pub fn get_screen_coords(src: &Rect, scale: &Vec2) -> Rect {
         let y = SCREEN_HEIGHT - src.y - src.h;
-        return Rect {
+        Rect {
             x: (src.x * scale.x).round(),
             y: (y * scale.y).round(),
             w: (src.w * scale.x).round(),
             h: (src.h * scale.y).round(),
-        };
+        }
     }
 
     pub fn draw_actor(&self, actor: &Actor, canvas: &mut Canvas, game: &SpriteGame, scale: Vec2) {
         let img = self.assets.actor_image(actor, game);
-        let src = actor.tile_offset(&img, game);
+        let src = actor.tile_offset(img, game);
         let dest = Self::get_screen_coords(&actor.draw_rect(), &scale);
         let params = DrawParam::new().src(src).dest(dest.point());
 

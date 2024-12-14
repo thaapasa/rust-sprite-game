@@ -16,47 +16,47 @@ pub struct Animation {
 
 impl Animation {
     pub fn player_idle() -> Animation {
-        return Animation {
+        Animation {
             tileset_image: |a| &a.player_idle_tiles,
             frame_count: 8,
             frame_duration: 0.13,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
-        };
+        }
     }
 
     pub fn player_walking() -> Animation {
-        return Animation {
+        Animation {
             tileset_image: |a| &a.player_walk_tiles,
             frame_count: 8,
             frame_duration: 0.05,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
-        };
+        }
     }
 
     pub fn player_running() -> Animation {
-        return Animation {
+        Animation {
             tileset_image: |a| &a.player_run_tiles,
             frame_count: 8,
             frame_duration: 0.05,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: true,
-        };
+        }
     }
 
     pub fn player_jumping() -> Animation {
-        return Animation {
+        Animation {
             tileset_image: |a| &a.player_jump_tiles,
             frame_count: 8,
             frame_duration: 0.05,
             current_frame: 0,
             elapsed_time: 0.0,
             loop_animation: false,
-        };
+        }
     }
 
     /// Update the animation based on elapsed time.
@@ -70,10 +70,10 @@ impl Animation {
 
     /// Return the current frame position
     pub fn get_current_frame(&self) -> usize {
-        return if self.loop_animation {
+        if self.loop_animation {
             self.current_frame % self.frame_count
         } else {
             min(self.frame_count - 1, self.current_frame)
-        };
+        }
     }
 }

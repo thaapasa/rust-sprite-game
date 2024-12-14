@@ -31,7 +31,7 @@ impl EventHandler for SpriteGame {
             y: scale_factor,
         };
         self.draw_frame(&mut canvas, scale);
-        return canvas.finish(ctx);
+        canvas.finish(ctx)
     }
 
     fn key_down_event(

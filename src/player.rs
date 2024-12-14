@@ -22,12 +22,12 @@ pub enum PlayerState {
 
 impl PlayerState {
     fn jump_speed(&self) -> f32 {
-        return match self {
+        match self {
             PlayerState::STANDING => JUMP_VELOCITY,
             PlayerState::WALKING => JUMP_VELOCITY * 1.16,
             PlayerState::RUNNING => JUMP_VELOCITY * 1.4,
             PlayerState::JUMPING => JUMP_VELOCITY,
-        };
+        }
     }
 }
 
@@ -52,7 +52,7 @@ impl Player {
         let x = 5.0 * GROUND_TILE_WIDTH;
         let y = 5.0 * GROUND_TILE_HEIGHT;
         let bbox = Dimensions::new(PLAYER_BBOX_WIDTH, PLAYER_BBOX_HEIGHT);
-        return Player {
+        Player {
             actor: Actor {
                 tag: ActorType::Player,
                 pos: Point2::new(x, y),
@@ -70,7 +70,7 @@ impl Player {
             state: PlayerState::STANDING,
             velocity: Vec2::new(0.0, 0.0),
             grounded: true,
-        };
+        }
     }
 
     pub fn handle_input(&mut self, input: &InputState, seconds: f32, level: &LevelHandler) {
@@ -82,18 +82,15 @@ impl Player {
         if input.jump {
             return self.jump();
         }
-        match input.move_x() {
-            Some(dir) => {
-                self.actor.facing = dir;
-                if input.running {
-                    return self.run(dir);
-                } else {
-                    return self.walk(dir);
-                }
+        if let Some(dir) = input.move_x() {
+            self.actor.facing = dir;
+            if input.running {
+                return self.run(dir);
+            } else {
+                return self.walk(dir);
             }
-            None => (),
         }
-        return self.idle();
+        self.idle()
     }
 
     fn idle(&mut self) {
@@ -163,9 +160,8 @@ impl Player {
     }
 
     fn resolve_collision(&mut self, actor: &Actor, along_x: bool) {
-        match find_mtv(&self.actor.bbox, &actor.bbox, self.velocity, along_x) {
-            Some(offs) => self.move_by(offs.x, offs.y),
-            _ => (),
+        if let Some(offs) = find_mtv(&self.actor.bbox, &actor.bbox, self.velocity, along_x) {
+            self.move_by(offs.x, offs.y)
         }
     }
 
@@ -176,6 +172,6 @@ impl Player {
             w: self.actor.bbox.w,
             h: 1.0,
         };
-        return level.collides_with(&ground_check);
+        level.collides_with(&ground_check)
     }
 }

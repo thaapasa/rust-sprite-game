@@ -61,7 +61,7 @@ impl Actor {
                 x: tile.x,
                 y: tile.y,
             },
-            pos: pos,
+            pos,
             facing: Direction::Right,
             sprite_size: Dimensions::new(GROUND_TILE_WIDTH, GROUND_TILE_HEIGHT),
             draw_offset: Point2::new(0.0, 0.0),
@@ -81,12 +81,12 @@ impl Actor {
     }
 
     pub fn draw_rect(&self) -> Rect {
-        return Rect {
+        Rect {
             x: self.pos.x + self.draw_offset.x,
             y: self.pos.y + self.draw_offset.y,
             w: self.sprite_size.x,
             h: self.sprite_size.y,
-        };
+        }
     }
 
     /// Returns the offset of this tile to draw this actor from its tile image

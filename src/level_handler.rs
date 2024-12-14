@@ -21,7 +21,7 @@ impl LevelHandler {
         let tiles = LevelTiles::new();
         let level = LevelBuilder::load_level(file, &tiles, width, height)?;
         let actors = LevelBuilder::create_actors(&level);
-        return Ok(LevelHandler {
+        Ok(LevelHandler {
             actors,
             bbox: Rect {
                 x: 0.0,
@@ -29,23 +29,22 @@ impl LevelHandler {
                 w: width as f32 * GROUND_TILE_WIDTH,
                 h: height as f32 * GROUND_TILE_HEIGHT,
             },
-        });
+        })
     }
 
     pub fn get_collisions(&self, bbox: &Rect) -> Vec<&Actor> {
-        if !self.bbox.collides_with(&bbox) {
+        if !self.bbox.collides_with(bbox) {
             return Vec::new();
         }
 
-        return self
-            .actors
+        self.actors
             .iter()
             .filter(|a| a.bbox.collides_with(bbox))
-            .collect();
+            .collect()
     }
 
     pub fn collides_with(&self, bbox: &Rect) -> bool {
-        if !self.bbox.collides_with(&bbox) {
+        if !self.bbox.collides_with(bbox) {
             return false;
         }
         for a in &self.actors {
@@ -53,7 +52,7 @@ impl LevelHandler {
                 return true;
             }
         }
-        return false;
+        false
     }
 }
 
@@ -72,26 +71,25 @@ impl LevelBuilder {
 
         let level = reader
             .lines()
-            .take(height as usize)
+            .take(height)
             .map(|r| r.unwrap_or(String::from("")))
             .map(|r| Self::read_row(tiles, &r, width))
             .collect();
 
-        return Ok(level);
+        Ok(level)
     }
 
-    fn create_actors(level: &Vec<Vec<TileType>>) -> Vec<Actor> {
+    fn create_actors(level: &[Vec<TileType>]) -> Vec<Actor> {
         let height = level.len();
         let mut actors = Vec::new();
-        for (y, row) in level.into_iter().enumerate() {
-            for (x, tile) in row.into_iter().enumerate() {
-                match LevelBuilder::create_tile(tile, x, height - y - 1) {
-                    Some(actor) => actors.push(actor),
-                    _ => (),
+        for (y, row) in level.iter().enumerate() {
+            for (x, tile) in row.iter().enumerate() {
+                if let Some(actor) = LevelBuilder::create_tile(tile, x, height - y - 1) {
+                    actors.push(actor)
                 }
             }
         }
-        return actors;
+        actors
     }
 
     fn create_tile(tile: &TileType, x: usize, y: usize) -> Option<Actor> {
@@ -165,11 +163,11 @@ impl LevelTiles {
             .into_iter()
             .map(|tile| (tile.char, tile))
             .collect();
-        return LevelTiles { empty, tile_map };
+        LevelTiles { empty, tile_map }
     }
 
     pub fn for_char(&self, char: char) -> TileType {
         let tile = self.tile_map.get(&char).expect("Unknown tile type");
-        return *tile;
+        *tile
     }
 }

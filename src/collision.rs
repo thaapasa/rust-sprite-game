@@ -28,9 +28,9 @@ pub fn find_mtv(target: &Rect, o: &Rect, velocity: Vec2, along_x: bool) -> Optio
         cy = -cy
     }
 
-    return if along_x {
+    if along_x {
         Some(Vec2::new(cx, 0.0))
     } else {
         Some(Vec2::new(0.0, cy))
-    };
+    }
 }

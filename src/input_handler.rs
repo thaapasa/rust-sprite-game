@@ -5,7 +5,7 @@ use ggez::input::keyboard::{KeyCode, KeyInput};
 
 use crate::primitives::Direction;
 
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct InputState {
     pub left: bool,
     pub right: bool,
@@ -13,19 +13,6 @@ pub struct InputState {
     pub request_quit: bool,
     pub running: bool,
     raw_keys: HashMap<KeyCode, bool>,
-}
-
-impl Default for InputState {
-    fn default() -> Self {
-        InputState {
-            left: false,
-            right: false,
-            jump: false,
-            request_quit: false,
-            running: false,
-            raw_keys: HashMap::new(),
-        }
-    }
 }
 
 impl InputState {
@@ -38,23 +25,17 @@ impl InputState {
     }
 
     pub fn handle_key_down(&mut self, input: KeyInput) -> GameResult {
-        match input.keycode {
-            Some(key) => {
-                self.raw_keys.insert(key, true);
-                self.update_state();
-            }
-            _ => (),
+        if let Some(key) = input.keycode {
+            self.raw_keys.insert(key, true);
+            self.update_state();
         }
         Ok(())
     }
 
     pub fn handle_key_up(&mut self, input: KeyInput) -> GameResult {
-        match input.keycode {
-            Some(key) => {
-                self.raw_keys.remove(&key);
-                self.update_state();
-            }
-            _ => (),
+        if let Some(key) = input.keycode {
+            self.raw_keys.remove(&key);
+            self.update_state();
         }
         Ok(())
     }
